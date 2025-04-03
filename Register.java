@@ -1,9 +1,13 @@
-public class Login {
+public class Register {
     private String username;
     private String password;
     private String role;
 
-    Login(String user, String pass, String role){
+    Register(){
+
+    }
+
+    Register(String user, String pass, String role){
         username = user;
         password = pass;
         this.role = role;
@@ -32,4 +36,10 @@ public class Login {
     public String getRole(){
         return role;
     }
+
+    @Override
+    public String toString(){
+        return "Username: " + username + "\nPassword: " + password + "\nRole: " + role;
+    }
+
 }
