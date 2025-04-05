@@ -42,17 +42,17 @@ public class SqlConnect {
     }
 
     public String getUrlD(){
-        urlD = "jdbc:mysql://localhost:3306/restaurant";
+        urlD = "jdbc:mysql://localhost:3306/your-database-name";
         return urlD;
     }
 
     public String getUserSqlD(){
-        usernameD = "root";
+        usernameD = "your-user";
         return usernameD;
     }
 
     public String getPassSqlD(){
-        passwordD = "50473";
+        passwordD = "your-password";
         return passwordD;
     }
 }

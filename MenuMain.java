@@ -133,14 +133,14 @@ public class MenuMain {
 
     public static void logOut(Connection connection) {
         try {
-            connection.close();  // ปิดการเชื่อมต่อฐานข้อมูล
+            connection.close();  // close connection
         } catch (SQLException e) {
             e.printStackTrace();
         }
         System.out.println("Logged out.");
         
-        // เรียก Main ใหม่หลังจาก logout
-        Main.main(null);  // กลับไปที่หน้า Main
+        // call Main after logout
+        Main.main(null);  // go bact to Main
     }
     
 

@@ -108,7 +108,7 @@ public class Main {
                 System.out.println("Login successfully! Welcome, " + user1.getUsername());
 
                 MenuMain.mainPage(connection); // link to Menumain method mainPage
-                return; // ออกจาก loginPage
+                return; // out from loginPage
             }else{
                 System.out.println("Password or Username is incorected.");
             }
