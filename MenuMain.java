@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Scanner;
 
-public class Main {
+public class MenuMain {
     public static void main(String[] args) {
         // ข้อมูลการเชื่อมต่อฐานข้อมูล
 
@@ -20,13 +20,14 @@ public class Main {
             Connection connection = DriverManager.getConnection(userSql1.getUrlD(), userSql1.getUserSqlD(), userSql1.getPassSqlD());
             Scanner sc = new Scanner(System.in);
         
-            System.out.println("connected MySQL success!");
+            System.out.println("-------------------------------");
             while (true){
                 System.out.println(
                                 "0 : Exit Program\n"+
                                 "1 : Show data in Database\n" +
                                 "2 : Add new Menu\n" +
-                                "3 : Delete Menu");
+                                "3 : Delete Menu\n" +
+                                "-------------------------------");
                 System.out.print("chose your choice : ");
             
                 int num = sc.nextInt();
@@ -68,9 +69,13 @@ public class Main {
             int rowsDeleted = ps.executeUpdate();
     
             if (rowsDeleted > 0) {
-                System.out.println("Delete Success!");
+                System.out.println("-------------------------------\n" +
+                                    "Delete Success!\n" +
+                                    "-------------------------------");
             } else {
-                System.out.println("Not Found ID");
+                System.out.println("-------------------------------\n"
+                                    +"Not Found ID\n"+
+                                    "-------------------------------");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,9 +103,13 @@ public class Main {
 
             int rowsInserted = ps.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("add new menu success!");
+                System.out.println("-------------------------------\n"
+                                    + "add new menu success!\n" +
+                                    "-------------------------------");
             } else {
-                System.out.println("can't add new menu");
+                System.out.println("-------------------------------\n"
+                                    +"can't add new menu\n" +
+                                    "-------------------------------");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,21 +122,22 @@ public class Main {
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             boolean hasData = false;
-            System.out.println("---Menu in restaurant---");
+            System.out.println("-------------------------------");
+            System.out.println("*--- Menu in restaurant ---*");
             while (resultSet.next()) {
                 hasData = true;
-                System.out.print("ID: [" + resultSet.getInt("id") + " | ");
+                System.out.print("[ID: " + resultSet.getInt("id") + " | ");
                 System.out.print("name: " + resultSet.getString("name") + " | ");
                 System.out.print("price: " + resultSet.getDouble("price") + " | ");
                 System.out.println("category: " + resultSet.getString("category")+ " ]");
             }
-            System.out.println("─────────────────────────");
-
+            System.out.println("-------------------------------");
+            // System.out.println("─────────────────────────");
+            
             if(!hasData){
                 System.out.println("--Menu is Empty--");
             }
 
-            System.out.println("─────────────────────────");
         } catch (Exception e) {
             e.printStackTrace();
         }

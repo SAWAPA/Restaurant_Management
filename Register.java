@@ -3,8 +3,9 @@ public class Register {
     private String password;
     private String role;
 
-    Register(){
-
+    Register(String user, String pass){
+        username = user;
+        password = pass;
     }
 
     Register(String user, String pass, String role){
