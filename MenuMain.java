@@ -1,61 +1,49 @@
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
 public class MenuMain {
-    public static void main(String[] args) {
-        // ข้อมูลการเชื่อมต่อฐานข้อมูล
-
-        // final String url = "jdbc:mysql://localhost:3306/restaurant";
-        // final String username = "root"; // หรือชื่อผู้ใช้ที่ตั้งไว้
-        // final String password = "50473";
-        // SqlConnect userSql = new SqlConnect(url, username, password);
-
-        SqlConnect userSql1 = new SqlConnect();
-
-        try {
-            Connection connection = DriverManager.getConnection(userSql1.getUrlD(), userSql1.getUserSqlD(), userSql1.getPassSqlD());
-            Scanner sc = new Scanner(System.in);
-        
-            System.out.println("-------------------------------");
-            while (true){
-                System.out.println(
-                                "0 : Exit Program\n"+
-                                "1 : Show data in Database\n" +
-                                "2 : Add new Menu\n" +
-                                "3 : Delete Menu\n" +
-                                "-------------------------------");
-                System.out.print("chose your choice : ");
-            
-                int num = sc.nextInt();
-                switch (num) {
-                    case 0:
-                        System.out.println("Exit Program...");
-                        connection.close();
-                        sc.close();
-                        return;
-                    case 1:
-                        showData(connection);
-                        break;
-                    case 2:
-                        addMenu(connection);
-                        break;
-                    case 3:
-                        deleteMenu(connection);
-                        break;
-                    default:
-                        break;
-                }
+    public static void mainPage(Connection connection) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("-------------------------------");
+        while (true) {
+            System.out.println("0 : Exit Program\n" +
+                               "1 : Show data in Database\n" +
+                               "2 : Add new Menu\n" +
+                               "3 : Delete Menu\n" +
+                               "4 : Log Out\n" +
+                               "-------------------------------");
+            System.out.print("choose your choice : ");
+    
+            int num = sc.nextInt();
+            sc.nextLine(); // เผื่อใช้ nextLine หลัง nextInt
+    
+            switch (num) {
+                case 0:
+                    System.out.println("Exit Program...");
+                    return;
+                case 1:
+                    showData(connection);
+                    break;
+                case 2:
+                    addMenu(connection);
+                    break;
+                case 3:
+                    deleteMenu(connection);
+                    break;
+                case 4:
+                    logOut(connection);
+                    return;
+                default:
+                    System.out.println("Invalid choice.");
+                    break;
             }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
-
+    
     public static void deleteMenu(Connection connection) {
         Scanner sc = new Scanner(System.in);
         System.out.print("food ID : ");
@@ -142,4 +130,18 @@ public class MenuMain {
             e.printStackTrace();
         }
     }
+
+    public static void logOut(Connection connection) {
+        try {
+            connection.close();  // ปิดการเชื่อมต่อฐานข้อมูล
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Logged out.");
+        
+        // เรียก Main ใหม่หลังจาก logout
+        Main.main(null);  // กลับไปที่หน้า Main
+    }
+    
+
 }

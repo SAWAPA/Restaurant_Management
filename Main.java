@@ -4,23 +4,24 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class Accountant {
+public class Main {
     public static void main(String[] args) {
         SqlConnect connect = new SqlConnect();
-
+        Connection connection = null;
+    
         try {
-            Connection connection = DriverManager.getConnection(connect.getUrlD(), connect.getUserSqlD(), connect.getPassSqlD());
+            connection = DriverManager.getConnection(connect.getUrlD(), connect.getUserSqlD(), connect.getPassSqlD());
             Scanner sc = new Scanner(System.in);
-
-            while(true){
+    
+            while (true) {
                 System.out.println("-------------------------------");
                 System.out.println("*- WELCOME TO BP'RESTAURANT -*");
                 System.out.println("-------------------------------");
                 System.out.println("0 : EXIT PROGRAM\n" +
-                                    "1 : LOGIN\n" +
-                                    "2 : REGISTER\n" +
-                                    "-------------------------------");
-                                    
+                                   "1 : LOGIN\n" +
+                                   "2 : REGISTER\n" +
+                                   "-------------------------------");
+    
                 System.out.print("choose your choice: ");
                 String num = sc.nextLine();
                 switch (num) {
@@ -34,15 +35,15 @@ public class Accountant {
                         break;
                     case "2":
                         registerPage(connection);
+                        break;
                     default:
                         break;
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+    }    
 
     public static void registerPage(Connection connection){
         Scanner sc = new Scanner(System.in);
@@ -106,7 +107,7 @@ public class Accountant {
             if (rowsInserted.next()) {
                 System.out.println("Login successfully! Welcome, " + user1.getUsername());
 
-                MenuMain.main(new String[] {}); // link to Menumain
+                MenuMain.mainPage(connection); // link to Menumain method mainPage
                 return; // ออกจาก loginPage
             }else{
                 System.out.println("Password or Username is incorected.");
