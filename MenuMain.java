@@ -6,16 +6,18 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 public class MenuMain {
-    
+
     public static void mainPage(Connection connection) {
         Scanner sc = new Scanner(System.in);
         System.out.println("-------------------------------");
         while (true) {
             System.out.println("0 : Exit Program\n" +
-                               "1 : Show data in Database\n" +
+                               "1 : Show Menu\n" +
                                "2 : Add new Menu\n" +
                                "3 : Delete Menu\n" +
-                               "4 : Log Out\n" +
+                               "4 : Order Food\n" +
+                               "5 : Show Order\n" +
+                               "6 : Log Out\n" +
                                "-------------------------------");
             System.out.print("choose your choice : ");
     
@@ -36,6 +38,9 @@ public class MenuMain {
                     deleteMenu(connection);
                     break;
                 case 4:
+                    orderFood(connection);
+                    break;
+                case 6:
                     logOut(connection);
                     return;
                 default:
@@ -44,7 +49,58 @@ public class MenuMain {
             }
         }
     }
-    
+
+    public static void orderFood(Connection connection) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Food ID : ");
+        int foodId = sc.nextInt();
+        System.out.print("Quantity : ");
+        int quantity = sc.nextInt();
+
+        // ดึงราคาจาก menu ที่ตรงกับ foodId
+        String getPriceSql = "SELECT price FROM restaurant.menu WHERE id = ?";
+        int pricePerUnit = 0;
+        
+        try (PreparedStatement ps = connection.prepareStatement(getPriceSql)) {
+            ps.setInt(1, foodId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                pricePerUnit = rs.getInt("price");
+            } else {
+                System.out.println("Food ID not found.");
+                
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // สร้างออเดอร์ใหม่
+        Order order = new Order(foodId, quantity, pricePerUnit);
+
+        // แสดงรายละเอียดการสั่งซื้อ
+        System.out.println("Order Details: " + order.toString());
+
+        // Insert ข้อมูลลงใน restaurant.orders
+        String insertOrderSql = "INSERT INTO restaurant.orders (menu_id, quantity, total_price) VALUES (?, ?, ?)";
+
+        try (PreparedStatement ps = connection.prepareStatement(insertOrderSql)) {
+            ps.setInt(1, order.getMenuId());
+            ps.setInt(2, order.getQuantity());
+            ps.setInt(3, order.getTotalPrice());
+
+            int rowsInserted = ps.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Order placed successfully!");
+            } else {
+                System.out.println("Failed to place order.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void deleteMenu(Connection connection) {
         Scanner sc = new Scanner(System.in);
         System.out.print("food ID : ");
