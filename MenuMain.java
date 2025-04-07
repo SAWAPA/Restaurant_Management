@@ -6,6 +6,7 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 public class MenuMain {
+    
     public static void mainPage(Connection connection) {
         Scanner sc = new Scanner(System.in);
         System.out.println("-------------------------------");
@@ -24,7 +25,7 @@ public class MenuMain {
             switch (num) {
                 case 0:
                     System.out.println("Exit Program...");
-                    return;
+                    System.exit(0);;
                 case 1:
                     showData(connection);
                     break;
