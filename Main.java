@@ -28,8 +28,8 @@ public class Main {
                 switch (num) {
                     case "0":
                         System.out.println("Exit Program...");
+                        System.exit(0);
                         connection.close();
-                        sc.close();
                         return;
                     case "1":
                         loginPage(connection);

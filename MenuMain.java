@@ -22,23 +22,26 @@ public class MenuMain {
             System.out.print("choose your choice : ");
     
             int num = sc.nextInt();
-            sc.nextLine(); // เผื่อใช้ nextLine หลัง nextInt
+            sc.nextLine();
     
             switch (num) {
                 case 0:
                     System.out.println("Exit Program...");
-                    System.exit(0);;
+                    System.exit(0);
                 case 1:
                     showData(connection);
                     break;
                 case 2:
-                    addMenu(connection);
+                    addMenu(connection, sc);
                     break;
                 case 3:
-                    deleteMenu(connection);
+                    deleteMenu(connection, sc);
                     break;
                 case 4:
-                    orderFood(connection);
+                    orderFood(connection, sc);
+                    break;
+                case 5:
+                    showOrder(connection, sc);
                     break;
                 case 6:
                     logOut(connection);
@@ -50,8 +53,94 @@ public class MenuMain {
         }
     }
 
-    public static void orderFood(Connection connection) {
-        Scanner sc = new Scanner(System.in);
+    public static void showOrder(Connection connection, Scanner sc) {
+        String showOrder = "SELECT * FROM restaurant.orders";
+        String clearOrder = "DELETE FROM restaurant.orders";
+        String orderSum = "SELECT SUM(total_price) FROM restaurant.orders";
+    
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(showOrder)) {
+            boolean hasData = false;
+            System.out.println("-------------------------------");
+            System.out.println("*--- All ordered food ---*");
+            while (resultSet.next()) {
+                hasData = true;
+                System.out.print("[ID: " + resultSet.getInt("id") + " | ");
+                System.out.print("Menu ID: " + resultSet.getString("menu_id") + " | ");
+                System.out.print("Name: " + resultSet.getString("name") + " | ");
+                System.out.print("Quantity: " + resultSet.getInt("quantity") + " | ");
+                System.out.print("Price: " + resultSet.getDouble("total_price") + " | ");
+                System.out.println("Order Date: " + resultSet.getString("order_date") + " ]");
+            }
+            System.out.println("-------------------------------");
+    
+            if (!hasData) {
+                System.out.println("--Order is Empty--\n-------------------------------");
+                return;
+            }
+
+            // แสดงยอดรวมของราคาทั้งหมด
+            try (Statement sumStatement = connection.createStatement();
+                ResultSet sumResult = sumStatement.executeQuery(orderSum)) {
+
+                if (sumResult.next()) {
+                double total = sumResult.getDouble(1);
+                System.out.println("Total price of all orders: " + total);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+    
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+        System.out.println("Enter 1 to clear all orders\nEnter 2 to cancel.");
+        int num = sc.nextInt();
+    
+        switch (num) {
+            case 1:
+                try (Statement statement = connection.createStatement()) {
+                    int rowsDeleted = statement.executeUpdate(clearOrder);
+                    System.out.println("All orders cleared (" + rowsDeleted + " rows deleted).\n-------------------------------");
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case 2:
+                break;
+            default:
+                System.out.println("Invaild choice");
+                break;
+        }
+    }
+    
+
+    public static void orderFood(Connection connection, Scanner sc) {
+        String query = "SELECT * FROM restaurant.menu";
+
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+            boolean hasData = false;
+            System.out.println("-------------------------------");
+            System.out.println("*--- Menu in restaurant ---*");
+            while (resultSet.next()) {
+                hasData = true;
+                System.out.print("[ID: " + resultSet.getInt("id") + " | ");
+                System.out.print("name: " + resultSet.getString("name") + " | ");
+                System.out.print("price: " + resultSet.getDouble("price") + " | ");
+                System.out.println("category: " + resultSet.getString("category")+ " ]");
+            }
+            System.out.println("-------------------------------");
+            
+            if(!hasData){
+                System.out.println("--Menu is Empty--");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         System.out.print("Food ID : ");
         int foodId = sc.nextInt();
@@ -59,18 +148,20 @@ public class MenuMain {
         int quantity = sc.nextInt();
 
         // ดึงราคาจาก menu ที่ตรงกับ foodId
-        String getPriceSql = "SELECT price FROM restaurant.menu WHERE id = ?";
+        String getPriceAndNameSql = "SELECT price, name FROM restaurant.menu WHERE id = ?";
         int pricePerUnit = 0;
-        
-        try (PreparedStatement ps = connection.prepareStatement(getPriceSql)) {
+        String foodName = "";
+
+        try (PreparedStatement ps = connection.prepareStatement(getPriceAndNameSql)) {
             ps.setInt(1, foodId);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 pricePerUnit = rs.getInt("price");
+                foodName = rs.getString("name");
             } else {
                 System.out.println("Food ID not found.");
-                
+                return; // ถ้าไม่เจอเมนู ให้จบ method เลย
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,13 +173,14 @@ public class MenuMain {
         // แสดงรายละเอียดการสั่งซื้อ
         System.out.println("Order Details: " + order.toString());
 
-        // Insert ข้อมูลลงใน restaurant.orders
-        String insertOrderSql = "INSERT INTO restaurant.orders (menu_id, quantity, total_price) VALUES (?, ?, ?)";
+        // Insert ข้อมูลลงใน restaurant.orders พร้อมชื่อ
+        String insertOrderSql = "INSERT INTO restaurant.orders (menu_id, name, quantity, total_price) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(insertOrderSql)) {
             ps.setInt(1, order.getMenuId());
-            ps.setInt(2, order.getQuantity());
-            ps.setInt(3, order.getTotalPrice());
+            ps.setString(2, foodName); // name จาก menu
+            ps.setInt(3, order.getQuantity());
+            ps.setInt(4, order.getTotalPrice());
 
             int rowsInserted = ps.executeUpdate();
             if (rowsInserted > 0) {
@@ -101,9 +193,8 @@ public class MenuMain {
         }
     }
 
-    public static void deleteMenu(Connection connection) {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("food ID : ");
+    public static void deleteMenu(Connection connection, Scanner sc) {
+        System.out.print("Food ID : ");
         int foodId = sc.nextInt();
 
         String deleteFood = "DELETE FROM restaurant.menu WHERE id = ?";
@@ -127,9 +218,7 @@ public class MenuMain {
         }
     }
     
-    public static void addMenu(Connection connection) {
-        Scanner sc = new Scanner(System.in);
-
+    public static void addMenu(Connection connection, Scanner sc) {
         System.out.print("Food name: ");
         String productName = sc.nextLine();
 
