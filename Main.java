@@ -9,11 +9,10 @@ public class Main {
     public static void main(String[] args) {
         SqlConnect connect = new SqlConnect();
         Connection connection = null;
+        Scanner sc = new Scanner(System.in);
     
         try {
             connection = DriverManager.getConnection(connect.getUrlD(), connect.getUserSqlD(), connect.getPassSqlD());
-            Scanner sc = new Scanner(System.in);
-    
             while (true) {
                 System.out.println("-------------------------------");
                 System.out.println("*- WELCOME TO BP'RESTAURANT -*");
@@ -32,10 +31,10 @@ public class Main {
                         connection.close();
                         return;
                     case "1":
-                        loginPage(connection);
+                        loginPage(connection, sc);
                         break;
                     case "2":
-                        registerPage(connection);
+                        registerPage(connection, sc);
                         break;
                     default:
                         break;
@@ -46,8 +45,7 @@ public class Main {
         }
     }    
 
-    public static void registerPage(Connection connection) {
-        Scanner sc = new Scanner(System.in);
+    public static void registerPage(Connection connection, Scanner sc) {
         String confirmPassword;
         String username;
         String password;
@@ -136,8 +134,7 @@ public class Main {
         }
     }
 
-    public static void loginPage(Connection connection){
-        Scanner sc = new Scanner(System.in);
+    public static void loginPage(Connection connection, Scanner sc){
         System.out.print("Username: ");
         String username = sc.nextLine();
         
