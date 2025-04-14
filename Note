@@ -1,4 +1,2 @@
 Bug found
- - login username password can use upper-lowercase
-   ex. username = aaaa \ password = bbbb
-       can use AAAA \ BBBB login to sql
+ - 

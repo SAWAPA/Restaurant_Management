@@ -50,7 +50,7 @@ public class MainFrame extends JFrame {
             // ดึงข้อมูลจาก TextField เมื่อปุ่ม Login ถูกคลิก
             textFromField1  = user.getText();  // ดึงค่าจาก TextField
             textFromField2 = pass.getText();
-            System.out.println("Text from TextField1: " + textFromField1 + "\nText from TextField2:" + textFromField2);  // แสดงผลข้อมูลจาก TextField
+            System.out.println("Text from TextField1: " + textFromField1 + "\nText from TextField2: " + textFromField2);  // แสดงผลข้อมูลจาก TextField
             login(textFromField1, textFromField2);
         });
     }
