@@ -19,7 +19,7 @@ public class Button extends JButton implements ActionListener{
     }
 
     private void setFontButton(){
-        this.setFont(new Font("Tahoma", Font.PLAIN, 24));
+        this.setFont(new Font("Tahoma", Font.PLAIN, 18));
     }
 
     @Override

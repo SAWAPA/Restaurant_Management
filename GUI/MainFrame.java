@@ -26,9 +26,9 @@ public class MainFrame extends JFrame {
 
     private void setTextField(){
         TextField textField1 = new TextField();
-        textField1.setBounds(600, 300, 300, 40);
+        textField1.setBounds(760, 300, 300, 40);
         TextField textField2 = new TextField();
-        textField2.setBounds(600, 400, 300, 40);
+        textField2.setBounds(760, 400, 300, 40);
         this.add(textField1);
         this.add(textField2);
 
@@ -37,13 +37,13 @@ public class MainFrame extends JFrame {
 
     private void setLabel(){
         Label label1 = new Label("Welcome to BP's Restaurant", 630, 40, 1000, 50);  // สร้าง label
-        Label label2 = new Label("Login", 850, 150, 1000, 50);
+        Label label2 = new Label("Login", 850, 220, 1000, 50);
         this.add(label1);
         this.add(label2);
     }
 
     private void setButton(TextField user, TextField pass){
-        Button buttonLogin = new Button("Login", 1200, 800, 150, 50);
+        Button buttonLogin = new Button("Login", 1000, 510, 100, 30);
 
         this.add(buttonLogin);
         buttonLogin.addActionListener(e -> {
