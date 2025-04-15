@@ -10,6 +10,10 @@ import java.sql.ResultSet;
 
 import javax.swing.JFrame;
 
+import GUI.attribute.Button;
+import GUI.attribute.Label;
+import GUI.attribute.TextField;
+
 import java.awt.event.MouseEvent;
 
 public class RegisterFrame extends JFrame{

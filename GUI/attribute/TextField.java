@@ -1,4 +1,4 @@
-package GUI;
+package GUI.attribute;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -8,7 +8,7 @@ import javax.swing.JTextField;
 
 public class TextField extends JTextField implements ActionListener{
 
-    TextField(int x, int y, int w, int h){
+    public TextField(int x, int y, int w, int h){
         this.setBounds(x,y,w,h);
         this.addActionListener(this);
         setFontTextField();

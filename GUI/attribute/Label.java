@@ -1,4 +1,4 @@
-package GUI;
+package GUI.attribute;
 
 import java.awt.Font;
 import javax.swing.JLabel;

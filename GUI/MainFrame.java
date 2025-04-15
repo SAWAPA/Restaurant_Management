@@ -10,6 +10,10 @@ import java.sql.SQLException;
 
 import javax.swing.*;
 
+import GUI.attribute.Button;
+import GUI.attribute.Label;
+import GUI.attribute.TextField;
+
 import java.awt.event.MouseEvent;
 
 // คลาส MyFrame ดูแลเรื่องหน้าต่างและ layout
