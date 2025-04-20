@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import javax.swing.JFrame;
+import javax.swing.JPasswordField;
 
 import GUI.attribute.Button;
 import GUI.attribute.Label;
@@ -69,8 +70,15 @@ public class RegisterFrame extends JFrame{
 
     private void setTextField(){
         TextField textField1 = new TextField(740, 290, 250, 40);
-        TextField textField2 = new TextField(740, 350, 250, 40);
-        TextField textField3 = new TextField(740, 410, 250, 40);
+
+        JPasswordField textField2 = new JPasswordField();
+        textField2.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 26));
+        textField2.setBounds(740, 350, 250, 40);
+
+        JPasswordField textField3 = new JPasswordField();
+        textField3.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 26));
+        textField3.setBounds(740, 410, 250, 40);
+
         TextField textField4 = new TextField(740, 470, 250, 40);
 
         this.add(textField1);
@@ -81,15 +89,15 @@ public class RegisterFrame extends JFrame{
         setButton(textField1, textField2, textField3, textField4);
     }
 
-    private void setButton(TextField user, TextField pass, TextField conPass, TextField roles){
+    private void setButton(TextField user, JPasswordField pass, JPasswordField conPass, TextField roles){
         Button buttonSignIn = new Button("Sign In", 1000, 550, 100, 40);
 
         this.add(buttonSignIn);
 
         buttonSignIn.addActionListener(e -> {
             username = user.getText();
-            password = pass.getText();
-            confirmPass = conPass.getText();
+            password = new String(pass.getPassword());
+            confirmPass = new String(conPass.getPassword());
             role = roles.getText();
 
             System.out.println("Username: " + username + "\nPassword: " + password + "\nConfirm Password: " + confirmPass
@@ -158,7 +166,7 @@ public class RegisterFrame extends JFrame{
             if (hasError) {
                 label7.setText(errorText);
                 label7.setVisible(true);
-                label7.repaint(); // เสริมได้
+                label7.repaint();
                 this.repaint();
                 return;
             }
