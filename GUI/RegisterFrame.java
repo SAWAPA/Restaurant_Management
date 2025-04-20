@@ -21,14 +21,21 @@ public class RegisterFrame extends JFrame{
     private static String password;
     private static String confirmPass;
     private static String role;
+    private Label label7;
 
     RegisterFrame(){
         this.setTitle("Register");
         this.setSize(1920, 1080);
-        this.setLayout(null); // ปิด layout manager
+        this.setLayout(null);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+        this.repaint();
+
+        label7 = new Label("", 14, 800, 600, 500, 40);
+        label7.setForeground(Color.RED);
+        label7.setVisible(false);
+        this.add(label7);
 
         setLabel();
         setTextField();
@@ -40,9 +47,9 @@ public class RegisterFrame extends JFrame{
         Label label3 = new Label("Password : ", 18 , 520, 350, 250, 40);
         Label label4 = new Label("Confirm Password : ", 18 , 520, 410, 250, 40);
         Label label5 = new Label("Role : ", 18 , 520, 470, 250, 40);
-
         Label label6 = new Label("Cancel", 18, 900, 550, 100, 40);
-        label6.setForeground(Color.BLUE);
+
+        label6.setForeground(Color.RED);
         label6.setCursor(new Cursor(Cursor.HAND_CURSOR));
         label6.addMouseListener(new MouseAdapter() {
             @Override
@@ -75,11 +82,11 @@ public class RegisterFrame extends JFrame{
     }
 
     private void setButton(TextField user, TextField pass, TextField conPass, TextField roles){
-        Button button1 = new Button("Sign In", 1000, 550, 100, 40);
+        Button buttonSignIn = new Button("Sign In", 1000, 550, 100, 40);
 
-        this.add(button1);
+        this.add(buttonSignIn);
 
-        button1.addActionListener(e -> {
+        buttonSignIn.addActionListener(e -> {
             username = user.getText();
             password = pass.getText();
             confirmPass = conPass.getText();
@@ -94,9 +101,11 @@ public class RegisterFrame extends JFrame{
     private void register(String username, String pass, String conPass, String role) {
         SqlConnect connect = new SqlConnect();
         Register user1 = new Register(username, pass, conPass, role);
-    
+
+        String errorText = "";
         String insertToSql = "INSERT INTO restaurant.users (username, password, role) VALUES (?, ?, ?)";
         String checkUsername = "SELECT * FROM restaurant.users WHERE username = ?";
+        boolean hasError = false;
     
         try (Connection connection = DriverManager.getConnection(connect.getUrlD(), connect.getUserSqlD(), connect.getPassSqlD())) {
             
@@ -107,38 +116,54 @@ public class RegisterFrame extends JFrame{
                 
                 if (rs.next()) {
                     System.out.println("Username already exists, please try again.");
-                    return; // if have a same username return
+                    errorText = "Username already exists, please try again.";
+                    hasError = true;
+                }
+
+                if (hasError) {
+                    label7.setText(errorText);
+                    label7.setVisible(true);
+                    label7.repaint();
+                    this.repaint();
+                    return;
                 }
             }
     
             // Check Password
             if (pass.length() < 8) {
-                System.out.println("Password must be at least 8 characters.");
-                return;
+                errorText = "Password must be at least 8 characters.";
+                hasError = true;
             }
-            if (!pass.matches(".*[A-Z].*")) {
-                System.out.println("Password must contain at least one uppercase letter.");
-                return;
+            else if (!pass.matches(".*[A-Z].*")) {
+                errorText = "Password must contain at least one uppercase letter.";
+                hasError = true;
             }
-            if (!pass.matches(".*\\d.*")) {
-                System.out.println("Password must contain at least one digit.");
-                return;
+            else if (!pass.matches(".*\\d.*")) {
+                errorText = "Password must contain at least one digit.";
+                hasError = true;
             }
-            if (!pass.matches(".*[!@#$%^&*()_+\\-={}\\[\\]:\";'<>?,./].*")) {
-                System.out.println("Password must contain at least one special character.");
-                return;
+            else if (!pass.matches(".*[!@#$%^&*()_+\\-={}\\[\\]:\";'<>?,./].*")) {
+                errorText = "Password must contain at least one special character.";
+                hasError = true;
             }
-            if (!pass.equals(conPass)) {
-                System.out.println("Password and Confirm Password do not match.");
+            else if (!pass.equals(conPass)) {
+                errorText = "Password and Confirm Password do not match.";
+                hasError = true;
+            }
+            else if (role == null || role.trim().isEmpty()) {
+                errorText = "Please put your role.";
+                hasError = true;
+            }
+
+            if (hasError) {
+                label7.setText(errorText);
+                label7.setVisible(true);
+                label7.repaint(); // เสริมได้
+                this.repaint();
                 return;
             }
 
-            if (role == null || role.trim().isEmpty()) {
-                System.out.println("Please put your role.");
-                return;
-            }
             
-    
             // Insert to Sql
             try (PreparedStatement insertStmt = connection.prepareStatement(insertToSql)) {
                 insertStmt.setString(1, username);
