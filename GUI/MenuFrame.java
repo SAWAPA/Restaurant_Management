@@ -35,6 +35,8 @@ public class MenuFrame extends JFrame{
         JTable menuTable = new JTable();
         DefaultTableModel model = new DefaultTableModel();
         menuTable.setModel(model);
+
+        menuTable.setDefaultEditor(Object.class, null);
         
         Font thaiFont = new Font("Tahoma", Font.PLAIN, 16);
         menuTable.setFont(thaiFont);
