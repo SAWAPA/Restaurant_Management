@@ -53,6 +53,8 @@ public class MainFrame extends JFrame {
     private void setLabel(){
         Label label1 = new Label("Welcome to BP's Restaurant", 40, 630, 40, 1000, 50);
         Label label2 = new Label("Login", 40,850, 220, 1000, 50);
+        Label labal4 = new Label("Username", 20, 630, 295, 1000, 50);
+        Label label5 = new Label("Password", 20, 630, 395, 1000, 50);
 
         Label linkToRegisterPage = new Label("register", 18, 900, 510, 100, 30);
         linkToRegisterPage.setForeground(Color.BLUE);
@@ -69,6 +71,8 @@ public class MainFrame extends JFrame {
         this.add(label1);
         this.add(label2);
         this.add(linkToRegisterPage);
+        this.add(labal4);
+        this.add(label5);
     }
 
     private void setButton(TextField user, JPasswordField pass){
@@ -102,17 +106,6 @@ public class MainFrame extends JFrame {
 
             var rowsInserted = ps.executeQuery();
 
-            if (rowsInserted.next()) {
-                System.out.println("-------------------------------");
-                System.out.println("Login successfully! Welcome, " + user.getUsername());
-
-                return; // out from loginPage
-            }else{
-                System.out.println("Password or Username is incorected.");
-                errorText = "Password or Username is incorected.";
-                hasError = true;
-            }
-
             if (hasError) {
                 label3.setText(errorText);
                 label3.setVisible(true);
@@ -120,6 +113,20 @@ public class MainFrame extends JFrame {
                 this.repaint();
                 return;
             }
+
+            if (rowsInserted.next()) {
+                System.out.println("-------------------------------");
+                System.out.println("Login successfully! Welcome, " + user.getUsername());
+
+                new MenuFrame();
+                dispose();
+            }else{
+                System.out.println("Password or Username is incorected.");
+                errorText = "Password or Username is incorected.";
+                hasError = true;
+            }
+
+            
 
         }catch(SQLException e){
             e.printStackTrace();

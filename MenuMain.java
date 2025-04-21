@@ -178,7 +178,7 @@ public class MenuMain {
 
         try (PreparedStatement ps = connection.prepareStatement(insertOrderSql)) {
             ps.setInt(1, order.getMenuId());
-            ps.setString(2, foodName); // name จาก menu
+            ps.setString(2, foodName); // name from menu
             ps.setInt(3, order.getQuantity());
             ps.setInt(4, order.getTotalPrice());
 
