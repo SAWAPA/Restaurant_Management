@@ -30,7 +30,6 @@ public class RegisterFrame extends JFrame{
         this.setLayout(null);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setVisible(true);
         this.repaint();
 
         label7 = new Label("", 14, 800, 600, 500, 40);
@@ -40,6 +39,8 @@ public class RegisterFrame extends JFrame{
 
         setLabel();
         setTextField();
+
+        this.setVisible(true);
     }
 
     private void setLabel(){

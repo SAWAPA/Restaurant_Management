@@ -27,7 +27,6 @@ public class MainFrame extends JFrame {
         this.setLayout(null);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setVisible(true);
 
         label3 = new Label("Error", 14, 850, 550, 500, 40);
         label3.setForeground(Color.RED);
@@ -36,6 +35,8 @@ public class MainFrame extends JFrame {
 
         setLabel();
         setTextField();
+
+        this.setVisible(true);
     }
 
     private void setTextField(){
