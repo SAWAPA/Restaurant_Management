@@ -16,7 +16,7 @@ public class TextField extends JTextField implements ActionListener{
 
 
     private void setFontTextField(){
-        this.setFont(new Font("Tahoma", Font.PLAIN, 24));
+        this.setFont(new Font("Tahoma", Font.PLAIN, 20));
     }
 
     @Override

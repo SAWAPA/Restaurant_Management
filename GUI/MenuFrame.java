@@ -1,14 +1,18 @@
 package GUI;
 
-import GUI.attribute.Label;
+import GUI.attribute.*;
 
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -17,6 +21,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class MenuFrame extends JFrame{
+    JComboBox comboBox1;
+
     MenuFrame(String username, String role){
         this.setTitle("Menu");
         this.setSize(1920, 1080);
@@ -28,8 +34,62 @@ public class MenuFrame extends JFrame{
         this.add(label1);
 
         setTableMenu();
+        setComboBox();
 
         this.setVisible(true);
+    }
+
+    private void setComboBox(){
+        Label nameMenuLabel = new Label("Name", 16, 700, 150, 200, 30);
+        Label priceLabel = new Label("Price", 16, 700, 210, 200, 30);
+        Label categoryLabel = new Label("Category", 16, 700, 270, 200, 30);
+
+        TextField nameField = new TextField(790, 150, 200, 30);
+        TextField priceField = new TextField(790, 210, 200, 30);
+        TextField categoryField = new TextField(790, 270, 200, 30);
+
+        String[] c = {" ", "Insert", "Delete"}; 
+
+        comboBox1 = new JComboBox<>(c);
+        comboBox1.setBounds(700, 100, 200, 30);
+        comboBox1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        comboBox1.setBackground(Color.WHITE);
+
+        nameMenuLabel.setVisible(false);
+        nameField.setVisible(false);
+        priceLabel.setVisible(false);
+        priceField.setVisible(false);
+        categoryLabel.setVisible(false);
+        categoryField.setVisible(false);
+
+        this.add(comboBox1);
+        this.add(nameMenuLabel);
+        this.add(priceLabel);
+        this.add(categoryLabel);
+        this.add(nameField);
+        this.add(priceField);
+        this.add(categoryField);
+
+        comboBox1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String selected = (String) comboBox1.getSelectedItem();
+                if (selected.equals("Insert")) {
+                    nameMenuLabel.setVisible(true);
+                    nameField.setVisible(true);
+                    priceLabel.setVisible(true);
+                    priceField.setVisible(true);
+                    categoryLabel.setVisible(true);
+                    categoryField.setVisible(true);
+                }else {
+                    nameMenuLabel.setVisible(false);
+                    nameField.setVisible(false);
+                    priceLabel.setVisible(false);
+                    priceField.setVisible(false);
+                    categoryLabel.setVisible(false);
+                    categoryField.setVisible(false);
+                }
+            }
+        });
     }
 
     private void setTableMenu(){
