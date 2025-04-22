@@ -12,31 +12,34 @@ import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class MenuFrame extends JFrame{
-    MenuFrame(){
+    MenuFrame(String username, String role){
         this.setTitle("Menu");
         this.setSize(1920, 1080);
         this.setLayout(null);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
+        Label label1 = new Label("Login successfully! Welcome, " + username + " Role: " + role, 20, 10, 10, 1000, 50);
+        this.add(label1);
+
         setTableMenu();
 
         this.setVisible(true);
     }
 
-    private void setLabel(){
-        
-    }
-
     private void setTableMenu(){
         JTable menuTable = new JTable();
         DefaultTableModel model = new DefaultTableModel();
-        menuTable.setModel(model);
+        DefaultTableCellRenderer center = new DefaultTableCellRenderer();
 
+        menuTable.setModel(model);
         menuTable.setDefaultEditor(Object.class, null);
+        center.setHorizontalAlignment(SwingConstants.CENTER);
         
         Font thaiFont = new Font("Tahoma", Font.PLAIN, 16);
         menuTable.setFont(thaiFont);
@@ -49,8 +52,13 @@ public class MenuFrame extends JFrame{
         model.addColumn("Category");
 
         menuTable.getColumnModel().getColumn(0).setPreferredWidth(50); // ID
+        menuTable.getColumnModel().getColumn(0).setCellRenderer(center);
+
         menuTable.getColumnModel().getColumn(1).setPreferredWidth(200); // Name
+
         menuTable.getColumnModel().getColumn(2).setPreferredWidth(100); // Price
+        menuTable.getColumnModel().getColumn(2).setCellRenderer(center);
+        
         menuTable.getColumnModel().getColumn(3).setPreferredWidth(150); // Category
 
         menuTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -73,13 +81,13 @@ public class MenuFrame extends JFrame{
         try {
             // connect to database
             SqlConnect connect = new SqlConnect();
-            String url = connect.getUrlD() + "?useUnicode=true&characterEncoding=UTF-8"; // รองรับ UTF-8
-            String user = connect.getUserSqlD();
-            String pass = connect.getPassSqlD();
+            final String URL = connect.getUrlD() + "?useUnicode=true&characterEncoding=UTF-8"; // รองรับ UTF-8
+            final String USER = connect.getUserSqlD();
+            final String PASS = connect.getPassSqlD();
     
             String query = "SELECT * FROM restaurant.menu";
     
-            Connection connection = DriverManager.getConnection(url, user, pass);
+            Connection connection = DriverManager.getConnection(URL, USER, PASS);
             PreparedStatement ps = connection.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             

@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.*;
@@ -84,53 +85,51 @@ public class MainFrame extends JFrame {
             textFromField1 = user.getText();
             textFromField2 = new String(pass.getPassword());
 
-            System.out.println("Text from TextField1: " + textFromField1);
-            System.out.println("Text from PasswordField: " + textFromField2);
+            System.out.println("Username: " + textFromField1);
+            System.out.println("Password: " + textFromField2);
 
             login(textFromField1, textFromField2);
         });
     }
 
-    private void login(String username, String pass){
+    private void login(String username, String pass) {
         SqlConnect connect = new SqlConnect();
         Register user = new Register(username, pass);
 
-        String errorText = "";
         String loginToSql = "SELECT * FROM restaurant.users WHERE username = ? AND password = ?";
 
-        boolean hasError = false;
+        try (Connection connection = DriverManager.getConnection(connect.getUrlD(), connect.getUserSqlD(), connect.getPassSqlD());
+            PreparedStatement ps = connection.prepareStatement(loginToSql)) {
 
-        try(Connection connection = DriverManager.getConnection(connect.getUrlD(), connect.getUserSqlD(), connect.getPassSqlD());
-            PreparedStatement ps = connection.prepareStatement(loginToSql)){
             ps.setString(1, user.getUsername());
-            ps.setString(2,user.getPassword());
+            ps.setString(2, user.getPassword());
 
-            var rowsInserted = ps.executeQuery();
+            ResultSet result = ps.executeQuery();
 
-            if (hasError) {
+            if (result.next()) {
+                // Login Success
+                String role = result.getString("role");
+
+                System.out.println("-------------------------------");
+                System.out.println("Login successfully! Welcome, " + user.getUsername());
+
+                new MenuFrame(username, role);
+                dispose();
+            } else {
+                // Login fail
+                String errorText = "Password or Username is incorected.";
+                System.out.println(errorText);
                 label3.setText(errorText);
                 label3.setVisible(true);
                 label3.repaint();
                 this.repaint();
-                return;
             }
 
-            if (rowsInserted.next()) {
-                System.out.println("-------------------------------");
-                System.out.println("Login successfully! Welcome, " + user.getUsername());
-
-                new MenuFrame();
-                dispose();
-            }else{
-                System.out.println("Password or Username is incorected.");
-                errorText = "Password or Username is incorected.";
-                hasError = true;
-            }
-
-            
-
-        }catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
+            label3.setText("เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล");
+            label3.setVisible(true);
         }
     }
+
 }
