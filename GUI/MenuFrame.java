@@ -6,22 +6,39 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class MenuFrame extends JFrame{
     JComboBox comboBox1;
+    Label nameMenuLabel;
+    Label priceLabel;
+    Label categoryLabel;
+    Label idMenuLabel;
+    TextField idMenuTextField;
+    TextField nameField;
+    TextField priceField;
+    TextField categoryField;
+    Button insertButton;
+    Button deleteButton;
+    JTable menuTable;
+    DefaultTableModel model;
 
     MenuFrame(String username, String role){
         this.setTitle("Menu");
@@ -33,21 +50,63 @@ public class MenuFrame extends JFrame{
         Label label1 = new Label("Login successfully! Welcome, " + username + " Role: " + role, 20, 10, 10, 1000, 50);
         this.add(label1);
 
+        deleteButton = new Button("Delete", 1000, 200, 100, 30);
+        this.add(deleteButton);
+
+        initializeUI();
+    }
+
+    protected void initializeUI(){
         setTableMenu();
         setComboBox();
+        setLabel();
+        setTextFields();
+        objectVisible();
 
         this.setVisible(true);
     }
 
+    private void objectVisible(){
+        nameMenuLabel.setVisible(false);
+        nameField.setVisible(false);
+        priceLabel.setVisible(false);
+        priceField.setVisible(false);
+        categoryLabel.setVisible(false);
+        categoryField.setVisible(false);
+        insertButton.setVisible(false);
+        deleteButton.setVisible(false);
+        idMenuLabel.setVisible(false);
+        idMenuTextField.setVisible(false);
+    }
+
+    private void setTextFields(){
+        nameField = new TextField(790, 150, 200, 30);
+        priceField = new TextField(790, 210, 200, 30);
+        categoryField = new TextField(790, 270, 200, 30);
+        idMenuTextField = new TextField(790, 150, 500, 30);
+
+        this.add(nameField);
+        this.add(priceField);
+        this.add(categoryField);
+        this.add(idMenuTextField);
+
+        setButtonInsert(nameField, priceField, categoryField, idMenuTextField);
+        selectTextField(idMenuTextField);
+    }
+
+    private void setLabel(){
+        nameMenuLabel = new Label("Name", 16, 700, 150, 200, 30);
+        priceLabel = new Label("Price", 16, 700, 210, 200, 30);
+        categoryLabel = new Label("Category", 16, 700, 270, 200, 30);
+        idMenuLabel = new Label("ID Select", 16, 700, 150, 200, 30);
+
+        this.add(nameMenuLabel);
+        this.add(priceLabel);
+        this.add(categoryLabel);    
+        this.add(idMenuLabel);
+    }
+
     private void setComboBox(){
-        Label nameMenuLabel = new Label("Name", 16, 700, 150, 200, 30);
-        Label priceLabel = new Label("Price", 16, 700, 210, 200, 30);
-        Label categoryLabel = new Label("Category", 16, 700, 270, 200, 30);
-
-        TextField nameField = new TextField(790, 150, 200, 30);
-        TextField priceField = new TextField(790, 210, 200, 30);
-        TextField categoryField = new TextField(790, 270, 200, 30);
-
         String[] c = {" ", "Insert", "Delete"}; 
 
         comboBox1 = new JComboBox<>(c);
@@ -55,20 +114,7 @@ public class MenuFrame extends JFrame{
         comboBox1.setFont(new Font("Tahoma", Font.PLAIN, 16));
         comboBox1.setBackground(Color.WHITE);
 
-        nameMenuLabel.setVisible(false);
-        nameField.setVisible(false);
-        priceLabel.setVisible(false);
-        priceField.setVisible(false);
-        categoryLabel.setVisible(false);
-        categoryField.setVisible(false);
-
         this.add(comboBox1);
-        this.add(nameMenuLabel);
-        this.add(priceLabel);
-        this.add(categoryLabel);
-        this.add(nameField);
-        this.add(priceField);
-        this.add(categoryField);
 
         comboBox1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -80,24 +126,47 @@ public class MenuFrame extends JFrame{
                     priceField.setVisible(true);
                     categoryLabel.setVisible(true);
                     categoryField.setVisible(true);
-                }else {
+                    insertButton.setVisible(true);
+
+                    idMenuLabel.setVisible(false);
+                    idMenuTextField.setVisible(false);
+                    deleteButton.setVisible(false);
+                }
+                else if(selected.equals("Delete")){
+                    idMenuLabel.setVisible(true);
+                    idMenuTextField.setVisible(true);
+                    deleteButton.setVisible(true);
+
                     nameMenuLabel.setVisible(false);
                     nameField.setVisible(false);
                     priceLabel.setVisible(false);
                     priceField.setVisible(false);
                     categoryLabel.setVisible(false);
                     categoryField.setVisible(false);
+                    insertButton.setVisible(false);
+                }
+                else {
+                    nameMenuLabel.setVisible(false);
+                    nameField.setVisible(false);
+                    priceLabel.setVisible(false);
+                    priceField.setVisible(false);
+                    categoryLabel.setVisible(false);
+                    categoryField.setVisible(false);
+                    insertButton.setVisible(false);
+                    idMenuLabel.setVisible(false);
+                    idMenuTextField.setVisible(false);
+                    deleteButton.setVisible(false);
                 }
             }
         });
     }
 
     private void setTableMenu(){
-        JTable menuTable = new JTable();
-        DefaultTableModel model = new DefaultTableModel();
+        menuTable = new JTable();
+        model = new DefaultTableModel();
+        menuTable.setModel(model);
         DefaultTableCellRenderer center = new DefaultTableCellRenderer();
 
-        menuTable.setModel(model);
         menuTable.setDefaultEditor(Object.class, null);
         center.setHorizontalAlignment(SwingConstants.CENTER);
         
@@ -136,8 +205,128 @@ public class MenuFrame extends JFrame{
         menuTable.getTableHeader().repaint();
     }
 
-    private void showTableMenu(JTable menu, DefaultTableModel model) {
+    private void selectTextField(TextField id) {
+        ArrayList<Integer> arr = new ArrayList<>();
+    
+        menuTable.setCellSelectionEnabled(true);
+        menuTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    
+        menuTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int[] selectedRows = menuTable.getSelectedRows();
+                int[] selectedCols = menuTable.getSelectedColumns();
+    
+                StringBuilder selectedText = new StringBuilder();
+                arr.clear();
+    
+                for (int row : selectedRows) {
+                    for (int col : selectedCols) {
+                        Object value = menuTable.getValueAt(row, col);
+                        if (value != null) {
+                            try {
+                                int intValue = Integer.parseInt(value.toString());
+                                arr.add(intValue);
+                                selectedText.append(intValue).append(", ");
+                            } catch (NumberFormatException ex) {
+                                System.out.println("Not number: " + value);
+                            }
+                        }
+                    }
+                }
+    
+                String result = selectedText.toString().replaceAll(", $", "");
+                id.setText("Selected: " + result);
+    
+                System.out.println("Array: " + arr);
 
+                setButtonDelete(arr);
+            }
+        });
+    }
+
+    private void setButtonDelete(ArrayList<Integer> arr) {
+        SqlConnect connect = new SqlConnect();
+    
+        // ลบ ActionListener เก่าทั้งหมดก่อน
+        for (ActionListener al : deleteButton.getActionListeners()) {
+            deleteButton.removeActionListener(al);
+        }
+    
+        deleteButton.addActionListener(ev -> {
+            String delete = "DELETE FROM restaurant.menu WHERE id = ?";
+    
+            try (Connection connection = DriverManager.getConnection(connect.getUrlD(), connect.getUserSqlD(), connect.getPassSqlD());
+                 PreparedStatement ps = connection.prepareStatement(delete)) {
+    
+                for (int i = 0; i < arr.size(); i++) {
+                    ps.setInt(1, arr.get(i));
+                    ps.executeUpdate();
+                    System.out.println("Delete id = " + arr.get(i));
+                }
+    
+                model.setRowCount(0); // clear old table
+                showTableMenu(menuTable, model); // refresh table
+    
+                JOptionPane.showMessageDialog(this, "Delete success!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    
+
+    private void setButtonInsert(TextField menuName, TextField price, TextField category, TextField id){
+        SqlConnect connect = new SqlConnect();
+
+        insertButton = new Button("Insert", 1000, 310, 80, 30);
+
+        this.add(insertButton);
+
+        String insertSql = "INSERT INTO restaurant.menu (name, price, category) VALUES (?, ?, ?)";
+        insertButton.addActionListener(e ->{
+            String nameText = menuName.getText().trim();
+            String priceText = price.getText().trim();
+            String categoryText = category.getText().trim();
+
+            // check null
+            if (nameText.isEmpty() || priceText.isEmpty() || categoryText.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Please Insert text.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int priceValue;
+            try {
+                priceValue = Integer.parseInt(priceText);
+            } catch (NumberFormatException ex) {
+                javax.swing.JOptionPane.showMessageDialog(null, "กรุณากรอกราคาเป็นตัวเลขเท่านั้น", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try (Connection connection = DriverManager.getConnection(connect.getUrlD(), connect.getUserSqlD(), connect.getPassSqlD());
+                PreparedStatement ps = connection.prepareStatement(insertSql)){
+                ps.setString(1, menuName.getText());
+                ps.setInt(2, priceValue);
+                ps.setString(3, category.getText());
+
+                int rowsInserted = ps.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("-------------------------------\n"
+                                        + "add new menu success!\n" +
+                                            "-------------------------------");
+                    model.setRowCount(0); // clear old table
+                    showTableMenu(menuTable, model); // refresh table
+                } else {
+                    System.out.println("-------------------------------\n"
+                                        +"can't add new menu\n" +
+                                        "-------------------------------");
+                }
+            } catch (Exception a) {
+                a.printStackTrace();
+            }
+        });
+    }
+
+    private void showTableMenu(JTable menu, DefaultTableModel model) {
         try {
             // connect to database
             SqlConnect connect = new SqlConnect();
