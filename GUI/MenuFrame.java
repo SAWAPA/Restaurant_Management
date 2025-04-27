@@ -25,19 +25,27 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import org.w3c.dom.Text;
+
 public class MenuFrame extends JFrame{
     JComboBox comboBox1;
+
     Label nameMenuLabel;
     Label priceLabel;
     Label categoryLabel;
     Label idMenuLabel;
+    Label selectColumLabel;
+
     TextField idMenuTextField;
     TextField nameField;
     TextField priceField;
     TextField categoryField;
+
     Button insertButton;
     Button deleteButton;
+
     JTable menuTable;
+
     DefaultTableModel model;
 
     MenuFrame(String username, String role){
@@ -77,6 +85,7 @@ public class MenuFrame extends JFrame{
         deleteButton.setVisible(false);
         idMenuLabel.setVisible(false);
         idMenuTextField.setVisible(false);
+        selectColumLabel.setVisible(false);
     }
 
     private void setTextFields(){
@@ -99,11 +108,13 @@ public class MenuFrame extends JFrame{
         priceLabel = new Label("Price", 16, 700, 210, 200, 30);
         categoryLabel = new Label("Category", 16, 700, 270, 200, 30);
         idMenuLabel = new Label("ID Select", 16, 700, 150, 200, 30);
+        selectColumLabel = new Label("Please select colum ID to delete.", 16, 700, 50, 500, 30);
 
         this.add(nameMenuLabel);
         this.add(priceLabel);
         this.add(categoryLabel);    
         this.add(idMenuLabel);
+        this.add(selectColumLabel);
     }
 
     private void setComboBox(){
@@ -131,11 +142,13 @@ public class MenuFrame extends JFrame{
                     idMenuLabel.setVisible(false);
                     idMenuTextField.setVisible(false);
                     deleteButton.setVisible(false);
+                    selectColumLabel.setVisible(false);
                 }
                 else if(selected.equals("Delete")){
                     idMenuLabel.setVisible(true);
                     idMenuTextField.setVisible(true);
                     deleteButton.setVisible(true);
+                    selectColumLabel.setVisible(true);
 
                     nameMenuLabel.setVisible(false);
                     nameField.setVisible(false);
@@ -144,18 +157,6 @@ public class MenuFrame extends JFrame{
                     categoryLabel.setVisible(false);
                     categoryField.setVisible(false);
                     insertButton.setVisible(false);
-                }
-                else {
-                    nameMenuLabel.setVisible(false);
-                    nameField.setVisible(false);
-                    priceLabel.setVisible(false);
-                    priceField.setVisible(false);
-                    categoryLabel.setVisible(false);
-                    categoryField.setVisible(false);
-                    insertButton.setVisible(false);
-                    idMenuLabel.setVisible(false);
-                    idMenuTextField.setVisible(false);
-                    deleteButton.setVisible(false);
                 }
             }
         });
@@ -194,7 +195,7 @@ public class MenuFrame extends JFrame{
         int tableWidth = menuTable.getColumnModel().getColumn(0).getPreferredWidth() +
                         menuTable.getColumnModel().getColumn(1).getPreferredWidth() +
                         menuTable.getColumnModel().getColumn(2).getPreferredWidth() +
-                        menuTable.getColumnModel().getColumn(3).getPreferredWidth() + 3;
+                        menuTable.getColumnModel().getColumn(3).getPreferredWidth() + 4;
 
         JScrollPane scrollPane = new JScrollPane(menuTable);
         scrollPane.setBounds(10, 100, tableWidth, 600);
@@ -210,26 +211,22 @@ public class MenuFrame extends JFrame{
     
         menuTable.setCellSelectionEnabled(true);
         menuTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    
+
         menuTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int[] selectedRows = menuTable.getSelectedRows();
-                int[] selectedCols = menuTable.getSelectedColumns();
-    
                 StringBuilder selectedText = new StringBuilder();
                 arr.clear();
     
                 for (int row : selectedRows) {
-                    for (int col : selectedCols) {
-                        Object value = menuTable.getValueAt(row, col);
-                        if (value != null) {
-                            try {
-                                int intValue = Integer.parseInt(value.toString());
-                                arr.add(intValue);
-                                selectedText.append(intValue).append(", ");
-                            } catch (NumberFormatException ex) {
-                                System.out.println("Not number: " + value);
-                            }
+                    Object value = menuTable.getValueAt(row, 0);
+                    if (value != null) {
+                        try {
+                            int intValue = Integer.parseInt(value.toString());
+                            arr.add(intValue);
+                            selectedText.append(intValue).append(" ");
+                        } catch (NumberFormatException ex) {
+                            System.out.println("Not number: " + value);
                         }
                     }
                 }
@@ -239,34 +236,33 @@ public class MenuFrame extends JFrame{
     
                 System.out.println("Array: " + arr);
 
-                setButtonDelete(arr);
+                buttonDelete(arr, id);
             }
         });
     }
 
-    private void setButtonDelete(ArrayList<Integer> arr) {
+    private void buttonDelete(ArrayList<Integer> arr, TextField id) {
         SqlConnect connect = new SqlConnect();
-    
-        // ลบ ActionListener เก่าทั้งหมดก่อน
+        String getId = id.getText();
         for (ActionListener al : deleteButton.getActionListeners()) {
             deleteButton.removeActionListener(al);
         }
     
         deleteButton.addActionListener(ev -> {
             String delete = "DELETE FROM restaurant.menu WHERE id = ?";
-    
+            
             try (Connection connection = DriverManager.getConnection(connect.getUrlD(), connect.getUserSqlD(), connect.getPassSqlD());
                  PreparedStatement ps = connection.prepareStatement(delete)) {
-    
+                
                 for (int i = 0; i < arr.size(); i++) {
                     ps.setInt(1, arr.get(i));
                     ps.executeUpdate();
                     System.out.println("Delete id = " + arr.get(i));
                 }
-    
+                
                 model.setRowCount(0); // clear old table
                 showTableMenu(menuTable, model); // refresh table
-    
+                
                 JOptionPane.showMessageDialog(this, "Delete success!");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -330,7 +326,7 @@ public class MenuFrame extends JFrame{
         try {
             // connect to database
             SqlConnect connect = new SqlConnect();
-            final String URL = connect.getUrlD() + "?useUnicode=true&characterEncoding=UTF-8"; // รองรับ UTF-8
+            final String URL = connect.getUrlD() + "?useUnicode=true&characterEncoding=UTF-8"; // Support UTF-8
             final String USER = connect.getUserSqlD();
             final String PASS = connect.getPassSqlD();
     
