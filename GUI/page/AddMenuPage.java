@@ -29,8 +29,8 @@ public class AddMenuPage extends JPanel {
     private Label categoryLabel;
     private Label idMenuLabel;
     private Label selectColumLabel;
+    private Label idMenuSelect;
 
-    private TextField idMenuTextField;
     private TextField nameField;
     private TextField priceField;
     private TextField categoryField;
@@ -43,8 +43,9 @@ public class AddMenuPage extends JPanel {
         this.setLayout(null);
         this.setBackground(Color.WHITE);
 
-        deleteButton = new Button("Delete", 1100, 200, 100, 30);
+        deleteButton = new Button("Delete", 1100, 250, 100, 30);
         this.add(deleteButton);
+        
         initializeUI();
     }
 
@@ -68,7 +69,7 @@ public class AddMenuPage extends JPanel {
         insertButton.setVisible(false);
         deleteButton.setVisible(false);
         idMenuLabel.setVisible(false);
-        idMenuTextField.setVisible(false);
+        idMenuSelect.setVisible(false);
         selectColumLabel.setVisible(false);
     }
 
@@ -76,30 +77,30 @@ public class AddMenuPage extends JPanel {
         nameField = new TextField(900, 150, 200, 30);
         priceField = new TextField(900, 210, 200, 30);
         categoryField = new TextField(900, 270, 200, 30);
-        idMenuTextField = new TextField(900, 150, 500, 30);
 
         this.add(nameField);
         this.add(priceField);
         this.add(categoryField);
-        this.add(idMenuTextField);
 
-
-        setButtonInsert(nameField, priceField, categoryField, idMenuTextField);
-        selectTextField(idMenuTextField);
+        setButtonInsert(nameField, priceField, categoryField);
     }
 
     private void setLabel(){
         nameMenuLabel = new Label("Name", 16, 800, 150, 200, 30);
         priceLabel = new Label("Price", 16, 800, 210, 200, 30);
         categoryLabel = new Label("Category", 16, 800, 270, 200, 30);
-        idMenuLabel = new Label("ID Select", 16, 800, 150, 200, 30);
-        selectColumLabel = new Label("Please select colum ID to delete.", 16, 800, 50, 500, 30);
+        idMenuLabel = new Label("ID Select: ", 16, 800, 200, 200, 30);
+        selectColumLabel = new Label("Please select colum ID to delete.", 16, 800, 150, 500, 30);
+        idMenuSelect = new Label("........", 16, 900, 200, 500, 30);
 
         this.add(nameMenuLabel);
         this.add(priceLabel);
         this.add(categoryLabel);    
         this.add(idMenuLabel);
         this.add(selectColumLabel);
+        this.add(idMenuSelect);
+
+        selectTextField(idMenuSelect);
     }
 
     private void setComboBox(){
@@ -124,13 +125,13 @@ public class AddMenuPage extends JPanel {
                 insertButton.setVisible(true);
 
                 idMenuLabel.setVisible(false);
-                idMenuTextField.setVisible(false);
+                idMenuSelect.setVisible(false);
                 deleteButton.setVisible(false);
                 selectColumLabel.setVisible(false);
             }
             else if(selected.equals("Delete")){
                 idMenuLabel.setVisible(true);
-                idMenuTextField.setVisible(true);
+                idMenuSelect.setVisible(true);
                 deleteButton.setVisible(true);
                 selectColumLabel.setVisible(true);
 
@@ -144,7 +145,7 @@ public class AddMenuPage extends JPanel {
             }
             else{
                 idMenuLabel.setVisible(false);
-                idMenuTextField.setVisible(false);
+                idMenuSelect.setVisible(false);
                 deleteButton.setVisible(false);
                 selectColumLabel.setVisible(false);
                 nameMenuLabel.setVisible(false);
@@ -202,7 +203,7 @@ public class AddMenuPage extends JPanel {
         menuTable.getTableHeader().repaint();
     }
 
-    private void selectTextField(TextField id) {
+    private void selectTextField(Label id) {
         ArrayList<Integer> arr = new ArrayList<>();
     
         menuTable.setCellSelectionEnabled(true);
@@ -228,7 +229,7 @@ public class AddMenuPage extends JPanel {
                 }
     
                 String result = selectedText.toString().replaceAll(", $", "");
-                id.setText("Selected: " + result);
+                id.setText(result);
     
                 System.out.println("Array: " + arr);
 
@@ -237,7 +238,7 @@ public class AddMenuPage extends JPanel {
         });
     }
 
-    private void buttonDelete(ArrayList<Integer> arr, TextField id) {
+    private void buttonDelete(ArrayList<Integer> arr, Label id) {
         SqlConnect connect = new SqlConnect();
         for (ActionListener al : deleteButton.getActionListeners()) {
             deleteButton.removeActionListener(al);
@@ -266,7 +267,7 @@ public class AddMenuPage extends JPanel {
     }
     
 
-    private void setButtonInsert(TextField menuName, TextField price, TextField category, TextField id){
+    private void setButtonInsert(TextField menuName, TextField price, TextField category){
         SqlConnect connect = new SqlConnect();
 
         insertButton = new Button("Insert", 1100, 310, 80, 30);
@@ -289,7 +290,7 @@ public class AddMenuPage extends JPanel {
             try {
                 priceValue = Integer.parseInt(priceText);
             } catch (NumberFormatException ex) {
-                javax.swing.JOptionPane.showMessageDialog(null, "กรุณากรอกราคาเป็นตัวเลขเท่านั้น", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                javax.swing.JOptionPane.showMessageDialog(null, "Please enter the price as numbers only.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
