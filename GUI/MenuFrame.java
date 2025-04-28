@@ -7,12 +7,9 @@ import java.awt.CardLayout;
 import java.awt.Color;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableModel;
 
 public class MenuFrame extends JFrame{
     private CardLayout cardLayout;
@@ -34,7 +31,7 @@ public class MenuFrame extends JFrame{
         addMenuPage.setLayout(null);
         addMenuPage.setBackground(Color.WHITE);
 
-        orderFoodPage = new JPanel();
+        orderFoodPage = new OrderFoodPage();
         orderFoodPage.setLayout(null);
         orderFoodPage.setBackground(Color.WHITE);
 
@@ -53,7 +50,7 @@ public class MenuFrame extends JFrame{
 
         initializeUI();
 
-        Label label1 = new Label("Login successfully! Welcome, " + username + " Role: " + role, 20, 250, 10, 1000, 50);
+        Label label1 = new Label("Login successfully! Welcome, " + username + " Role: " + role, 20, 100, 30, 1000, 50);
         addMenuPage.add(label1);
 
         isMenuVisible = true;

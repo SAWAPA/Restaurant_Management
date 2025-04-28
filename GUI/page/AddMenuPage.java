@@ -43,9 +43,9 @@ public class AddMenuPage extends JPanel {
         this.setLayout(null);
         this.setBackground(Color.WHITE);
 
-        deleteButton = new Button("Delete", 1100, 250, 100, 30);
+        deleteButton = new Button("Delete", 1000, 250, 100, 30);
         this.add(deleteButton);
-        
+
         initializeUI();
     }
 
@@ -74,9 +74,9 @@ public class AddMenuPage extends JPanel {
     }
 
     private void setTextFields(){
-        nameField = new TextField(900, 150, 200, 30);
-        priceField = new TextField(900, 210, 200, 30);
-        categoryField = new TextField(900, 270, 200, 30);
+        nameField = new TextField(800, 150, 200, 30);
+        priceField = new TextField(800, 210, 200, 30);
+        categoryField = new TextField(800, 270, 200, 30);
 
         this.add(nameField);
         this.add(priceField);
@@ -86,12 +86,12 @@ public class AddMenuPage extends JPanel {
     }
 
     private void setLabel(){
-        nameMenuLabel = new Label("Name", 16, 800, 150, 200, 30);
-        priceLabel = new Label("Price", 16, 800, 210, 200, 30);
-        categoryLabel = new Label("Category", 16, 800, 270, 200, 30);
-        idMenuLabel = new Label("ID Select: ", 16, 800, 200, 200, 30);
-        selectColumLabel = new Label("Please select colum ID to delete.", 16, 800, 150, 500, 30);
-        idMenuSelect = new Label("........", 16, 900, 200, 500, 30);
+        nameMenuLabel = new Label("Name", 16, 700, 150, 200, 30);
+        priceLabel = new Label("Price", 16, 700, 210, 200, 30);
+        categoryLabel = new Label("Category", 16, 700, 270, 200, 30);
+        idMenuLabel = new Label("ID Select: ", 16, 700, 200, 200, 30);
+        selectColumLabel = new Label("Please select colum ID to delete.", 16, 700, 150, 500, 30);
+        idMenuSelect = new Label("........", 16, 800, 200, 500, 30);
 
         this.add(nameMenuLabel);
         this.add(priceLabel);
@@ -107,7 +107,7 @@ public class AddMenuPage extends JPanel {
         String[] c = {" ", "Insert", "Delete"}; 
 
         comboBox1 = new JComboBox<>(c);
-        comboBox1.setBounds(800, 100, 200, 30);
+        comboBox1.setBounds(700, 100, 200, 30);
         comboBox1.setFont(new Font("Tahoma", Font.PLAIN, 16));
         comboBox1.setBackground(Color.WHITE);
 
@@ -195,7 +195,7 @@ public class AddMenuPage extends JPanel {
                         menuTable.getColumnModel().getColumn(3).getPreferredWidth() + 4;
 
         JScrollPane scrollPane = new JScrollPane(menuTable);
-        scrollPane.setBounds(250, 100, tableWidth, 600);
+        scrollPane.setBounds(100, 100, tableWidth, 600);
         this.add(scrollPane);
 
         showTableMenu(menuTable, model);
@@ -270,7 +270,7 @@ public class AddMenuPage extends JPanel {
     private void setButtonInsert(TextField menuName, TextField price, TextField category){
         SqlConnect connect = new SqlConnect();
 
-        insertButton = new Button("Insert", 1100, 310, 80, 30);
+        insertButton = new Button("Insert", 1000, 310, 80, 30);
 
         this.add(insertButton);
 
@@ -350,5 +350,4 @@ public class AddMenuPage extends JPanel {
             e.printStackTrace();
         }
     }
-    
 }
