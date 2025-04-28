@@ -6,12 +6,12 @@ public class Register {
     private String confirmPass;
     private String role;
 
-    Register(String user, String pass){
+    public Register(String user, String pass){
         username = user;
         password = pass;
     }
 
-    Register(String user, String pass, String conPass, String role){
+    public Register(String user, String pass, String conPass, String role){
         username = user;
         password = pass;
         confirmPass = conPass;

@@ -1,6 +1,7 @@
-package GUI;
+package GUI.page;
 
 import GUI.attribute.Label;
+import GUI.SqlConnect;
 import GUI.attribute.Button;
 import GUI.attribute.TextField;
 
@@ -38,7 +39,7 @@ public class AddMenuPage extends JPanel {
     private Button deleteButton;
 
 
-    AddMenuPage() {
+    public AddMenuPage() {
         this.setLayout(null);
         this.setBackground(Color.WHITE);
 

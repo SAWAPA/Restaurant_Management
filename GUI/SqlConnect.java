@@ -9,11 +9,11 @@ public class SqlConnect {
     private String usernameD;
     private String passwordD;
 
-    SqlConnect(){
+    public SqlConnect(){
 
     }
 
-    SqlConnect(String u, String user, String p){
+    public SqlConnect(String u, String user, String p){
         url = u;
         username = user;
         password = p;

@@ -1,33 +1,20 @@
 package GUI;
 
 import GUI.attribute.*;
+import GUI.page.*;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class MenuFrame extends JFrame{
-    private JComboBox comboBox1;
-
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private JPanel addMenuPage;
@@ -35,24 +22,6 @@ public class MenuFrame extends JFrame{
     private JPanel menu3Page;
     private JPanel sidePanel;
     private boolean isMenuVisible = true;
-
-    private Label nameMenuLabel;
-    private Label priceLabel;
-    private Label categoryLabel;
-    private Label idMenuLabel;
-    private Label selectColumLabel;
-
-    private TextField idMenuTextField;
-    private TextField nameField;
-    private TextField priceField;
-    private TextField categoryField;
-
-    private Button insertButton;
-    private Button deleteButton;
-
-    private JTable menuTable;
-
-    private DefaultTableModel model;
 
     MenuFrame(String username, String role) {
         this.setTitle("Menu");
@@ -146,13 +115,12 @@ public class MenuFrame extends JFrame{
         this.add(sidePanel);
 
         // Event ☰
-        // กด ☰ โชว์/ซ่อนเมนู
         menuButton.addActionListener(e -> {
             isMenuVisible = !isMenuVisible;
             sidePanel.setVisible(isMenuVisible);
         });
 
-        // กดเมนูเปลี่ยนหน้า
+        // click to change menu
         menuItem1.addActionListener(e -> {
             cardLayout.show(mainPanel, "AddMenuPage");
         });
