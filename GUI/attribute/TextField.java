@@ -8,9 +8,9 @@ import javax.swing.JTextField;
 
 public class TextField extends JTextField implements ActionListener{
 
-    public TextField(int font, int x, int y, int w, int h){
+    public TextField(int fontSize, int x, int y, int w, int h){
         this.setBounds(x,y,w,h);
-        this.setFont(new Font("Tahoma", Font.PLAIN, font));
+        this.setFont(new Font("Tahoma", Font.PLAIN, fontSize));
         this.addActionListener(this);
         setFontTextField();
     }
