@@ -1,5 +1,6 @@
 package GUI.page;
 
+
 import GUI.attribute.*;
 
 import java.awt.Color;
@@ -9,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -21,7 +23,12 @@ import GUI.SqlConnect;
 
 public class OrderFoodPage extends JPanel{
     private JTable menuTable;
-    private DefaultTableModel model;
+    private JTable orderTable;
+
+    private Connection connection;
+
+    private DefaultTableModel menuModel;
+    private DefaultTableModel orderModel;
     
     public OrderFoodPage(){
         this.setLayout(null);
@@ -32,20 +39,140 @@ public class OrderFoodPage extends JPanel{
 
     protected void initializeUI(){
         setMenuTable();
-        setLable();
+        setOrderTable();
+        setLabel();
+        setTextFields();
         
         this.setVisible(true);
     }
 
-    private void setLable(){
-        Label orderLable = new Label("Order menu Page.", 20, 100, 30, 200, 50);
+    private void setLabel(){
+        Label orderLable = new Label("Menu", "bold", 20, 100, 30, 200, 50);  
+        Label foodId = new Label("Menu ID", "bold", 20, 700, 30, 200, 50);
+        Label foodQuantity = new Label("Quantity", "bold", 20, 870, 30, 200, 50);
+
+        this.add(foodId);
         this.add(orderLable);
+        this.add(foodQuantity);
+    }
+
+    private void setTextFields(){
+        TextField orderTextField = new TextField(18, 800, 40, 50, 30);
+        TextField quantityTextField = new TextField(18, 980, 40, 50, 30);
+
+        this.add(orderTextField);
+        this.add(quantityTextField);
+
+        addMenuButton(orderTextField, quantityTextField);
+    }
+
+    private void deleteOrderButton(){
+        
+    }
+
+    private void addMenuButton(TextField orderId, TextField quantity){
+        try {
+            SqlConnect connect = new SqlConnect();
+            final String URL = connect.getUrlD() + "?useUnicode=true&characterEncoding=UTF-8";
+            final String USER = connect.getUserSqlD();
+            final String PASS = connect.getPassSqlD();
+        
+            connection = DriverManager.getConnection(URL, USER, PASS);
+        } catch (SQLException ev) {
+            ev.printStackTrace();
+            return;
+        }
+
+        Button addButton = new Button("Add", 1100, 40, 90, 30);
+
+        String getPriceAndNameSql = "SELECT price, name FROM restaurant.menu WHERE id = ?";
+        String insertOrder = "INSERT INTO restaurant.orders (menu_id, name, quantity, total_price) VALUES (?, ?, ?, ?)";
+        String showOrder = "SELECT * FROM restaurant.orders";
+
+        this.add(addButton);
+
+        addButton.addActionListener(e ->{
+            String idText = orderId.getText().trim();
+            String qText = quantity.getText().trim();
+            
+            int id;
+            int q;
+
+            // check null
+            if (idText.isEmpty() || qText.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Please Insert text.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                id = Integer.parseInt(idText);
+                q = Integer.parseInt(qText);
+            } catch (NumberFormatException ex) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Please enter the price as numbers only.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int pricePerUnit = 0;
+            String foodName = "";
+
+            try (PreparedStatement ps = connection.prepareStatement(getPriceAndNameSql)) {
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+    
+                if (rs.next()) {
+                    pricePerUnit = rs.getInt("price");
+                    foodName = rs.getString("name");
+                } else {
+                    System.out.println("Food ID not found.");
+                    return;
+                }
+            } catch (SQLException ev) {
+                ev.printStackTrace();
+            }
+
+            Order order = new Order(id, q, pricePerUnit);
+
+            try (PreparedStatement ps = connection.prepareStatement(insertOrder)) {
+                ps.setInt(1, order.getMenuId());
+                ps.setString(2, foodName);
+                ps.setInt(3, order.getQuantity());
+                ps.setInt(4, order.getTotalPrice());
+    
+                int rowsInserted = ps.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Order placed successfully!");
+                } else {
+                    System.out.println("Failed to place order.");
+                }
+            } catch (SQLException ev) {
+                ev.printStackTrace();
+            }
+
+            try (Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(showOrder)){
+
+                orderModel.setRowCount(0);
+                while (resultSet.next()) {
+                    id = resultSet.getInt("ID");
+                    String name = resultSet.getString("Name");
+                    q = resultSet.getInt("Quantity");
+                    int price = resultSet.getInt("total_price");
+        
+                    orderModel.addRow(new Object[]{id, name, q, price});
+                }
+                
+            } catch (Exception ev) {
+                ev.printStackTrace();
+            }
+            
+        });
     }
 
     private void setMenuTable(){
         menuTable = new JTable();
-        model = new DefaultTableModel();
-        menuTable.setModel(model);
+        menuModel = new DefaultTableModel();
+        menuTable.setModel(menuModel);
+
         DefaultTableCellRenderer center = new DefaultTableCellRenderer();
         menuTable.setDefaultEditor(Object.class, null);
         center.setHorizontalAlignment(SwingConstants.CENTER);
@@ -55,10 +182,10 @@ public class OrderFoodPage extends JPanel{
         menuTable.setRowHeight(30);
         menuTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
 
-        model.addColumn("ID");
-        model.addColumn("Name");
-        model.addColumn("Price");
-        model.addColumn("Category");
+        menuModel.addColumn("ID");
+        menuModel.addColumn("Name");
+        menuModel.addColumn("Price");
+        menuModel.addColumn("Category");
 
         menuTable.getColumnModel().getColumn(0).setPreferredWidth(50); // ID
         menuTable.getColumnModel().getColumn(0).setCellRenderer(center);
@@ -80,7 +207,7 @@ public class OrderFoodPage extends JPanel{
         scrollPane.setBounds(100, 100, tableWidth, 600);
         this.add(scrollPane);
 
-        showTableMenu(menuTable, model);
+        showTableMenu(menuTable, menuModel);
 
         menuTable.getTableHeader().repaint();
     }
@@ -116,5 +243,47 @@ public class OrderFoodPage extends JPanel{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setOrderTable(){
+        orderTable = new JTable();
+        orderModel = new DefaultTableModel();
+        orderTable.setModel(orderModel);
+
+        DefaultTableCellRenderer center = new DefaultTableCellRenderer();
+        orderTable.setDefaultEditor(Object.class, null);
+        center.setHorizontalAlignment(SwingConstants.CENTER);
+
+        Font thaiFont = new Font("Tahoma", Font.PLAIN, 16);
+        orderTable.setFont(thaiFont);
+        orderTable.setRowHeight(30);
+        orderTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
+
+        orderModel.addColumn("ID");
+        orderModel.addColumn("Name");
+        orderModel.addColumn("Quantity");
+        orderModel.addColumn("Price");
+
+        orderTable.getColumnModel().getColumn(0).setPreferredWidth(50); // ID
+        orderTable.getColumnModel().getColumn(0).setCellRenderer(center);
+
+        orderTable.getColumnModel().getColumn(1).setPreferredWidth(200); // Name
+
+        orderTable.getColumnModel().getColumn(2).setPreferredWidth(100); // Price
+        orderTable.getColumnModel().getColumn(2).setCellRenderer(center);
+        
+        orderTable.getColumnModel().getColumn(3).setPreferredWidth(150); // Category
+
+        orderTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        int tableWidth = orderTable.getColumnModel().getColumn(0).getPreferredWidth() +
+                            orderTable.getColumnModel().getColumn(1).getPreferredWidth() +
+                            orderTable.getColumnModel().getColumn(2).getPreferredWidth() +
+                            orderTable.getColumnModel().getColumn(3).getPreferredWidth() + 4;
+
+        JScrollPane scrollPane = new JScrollPane(orderTable);
+        scrollPane.setBounds(800, 100, tableWidth, 600);
+        this.add(scrollPane);
+
+        orderTable.getTableHeader().repaint();
     }
 }

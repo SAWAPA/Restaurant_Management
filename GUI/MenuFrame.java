@@ -50,7 +50,7 @@ public class MenuFrame extends JFrame{
 
         initializeUI();
 
-        Label label1 = new Label("Login successfully! Welcome, " + username + " Role: " + role, 20, 100, 30, 1000, 50);
+        Label label1 = new Label("Login successfully! Welcome, " + username + " Role: " + role, "bold", 20, 100, 30, 1000, 50);
         addMenuPage.add(label1);
 
         isMenuVisible = true;

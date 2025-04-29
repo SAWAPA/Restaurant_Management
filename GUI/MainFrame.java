@@ -29,7 +29,7 @@ public class MainFrame extends JFrame {
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        label3 = new Label("Error", 14, 850, 550, 500, 40);
+        label3 = new Label("Error", "bold", 14, 850, 550, 500, 40);
         label3.setForeground(Color.RED);
         label3.setVisible(false);
         this.add(label3);
@@ -41,7 +41,7 @@ public class MainFrame extends JFrame {
     }
 
     private void setTextField(){
-        TextField textField1 = new TextField(760, 300, 300, 40);
+        TextField textField1 = new TextField(18 ,760, 300, 300, 40);
         JPasswordField passwordField = new JPasswordField();
         passwordField.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 26));
         passwordField.setBounds(760, 400, 300, 40);
@@ -53,12 +53,12 @@ public class MainFrame extends JFrame {
     }
 
     private void setLabel(){
-        Label label1 = new Label("Welcome to BP's Restaurant", 40, 630, 40, 1000, 50);
-        Label label2 = new Label("Login", 40,850, 220, 1000, 50);
-        Label labal4 = new Label("Username", 20, 630, 295, 1000, 50);
-        Label label5 = new Label("Password", 20, 630, 395, 1000, 50);
+        Label label1 = new Label("Welcome to BP's Restaurant", "bold", 40, 630, 40, 1000, 50);
+        Label label2 = new Label("Login", "bold", 40,850, 220, 1000, 50);
+        Label labal4 = new Label("Username", "bold", 20, 630, 295, 1000, 50);
+        Label label5 = new Label("Password", "bold", 20, 630, 395, 1000, 50);
 
-        Label linkToRegisterPage = new Label("register", 18, 900, 510, 100, 30);
+        Label linkToRegisterPage = new Label("register", "plain", 18, 900, 510, 100, 30);
         linkToRegisterPage.setForeground(Color.BLUE);
         linkToRegisterPage.setCursor(new Cursor(Cursor.HAND_CURSOR));
 

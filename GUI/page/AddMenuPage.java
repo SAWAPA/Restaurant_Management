@@ -74,9 +74,9 @@ public class AddMenuPage extends JPanel {
     }
 
     private void setTextFields(){
-        nameField = new TextField(800, 150, 200, 30);
-        priceField = new TextField(800, 210, 200, 30);
-        categoryField = new TextField(800, 270, 200, 30);
+        nameField = new TextField(18 ,800, 150, 200, 30);
+        priceField = new TextField(18 ,800, 210, 200, 30);
+        categoryField = new TextField(18 ,800, 270, 200, 30);
 
         this.add(nameField);
         this.add(priceField);
@@ -86,12 +86,12 @@ public class AddMenuPage extends JPanel {
     }
 
     private void setLabel(){
-        nameMenuLabel = new Label("Name", 16, 700, 150, 200, 30);
-        priceLabel = new Label("Price", 16, 700, 210, 200, 30);
-        categoryLabel = new Label("Category", 16, 700, 270, 200, 30);
-        idMenuLabel = new Label("ID Select: ", 16, 700, 200, 200, 30);
-        selectColumLabel = new Label("Please select colum ID to delete.", 16, 700, 150, 500, 30);
-        idMenuSelect = new Label("........", 16, 800, 200, 500, 30);
+        nameMenuLabel = new Label("Name", "plain", 16, 700, 150, 200, 30);
+        priceLabel = new Label("Price", "plain", 16, 700, 210, 200, 30);
+        categoryLabel = new Label("Category", "plain", 16, 700, 270, 200, 30);
+        idMenuLabel = new Label("ID Select: ", "plain", 16, 700, 200, 200, 30);
+        selectColumLabel = new Label("Please select colum ID to delete.", "plain", 16, 700, 150, 500, 30);
+        idMenuSelect = new Label("........", "plain", 16, 800, 200, 500, 30);
 
         this.add(nameMenuLabel);
         this.add(priceLabel);

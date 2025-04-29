@@ -32,7 +32,7 @@ public class RegisterFrame extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.repaint();
 
-        label7 = new Label("", 14, 800, 600, 500, 40);
+        label7 = new Label("", "bold", 14, 800, 600, 500, 40);
         label7.setForeground(Color.RED);
         label7.setVisible(false);
         this.add(label7);
@@ -44,12 +44,12 @@ public class RegisterFrame extends JFrame{
     }
 
     private void setLabel(){
-        Label label1 = new Label("Register", 40, 500, 170, 200, 100);
-        Label label2 = new Label("Username : ",18 , 520, 290, 250, 40);
-        Label label3 = new Label("Password : ", 18 , 520, 350, 250, 40);
-        Label label4 = new Label("Confirm Password : ", 18 , 520, 410, 250, 40);
-        Label label5 = new Label("Role : ", 18 , 520, 470, 250, 40);
-        Label label6 = new Label("Cancel", 18, 900, 550, 100, 40);
+        Label label1 = new Label("Register", "bold", 40, 500, 170, 200, 100);
+        Label label2 = new Label("Username : ", "bold",18 , 520, 290, 250, 40);
+        Label label3 = new Label("Password : ", "bold", 18 , 520, 350, 250, 40);
+        Label label4 = new Label("Confirm Password : ", "bold", 18 , 520, 410, 250, 40);
+        Label label5 = new Label("Role : ", "bold", 18 , 520, 470, 250, 40);
+        Label label6 = new Label("Cancel", "bold", 18, 900, 550, 100, 40);
 
         label6.setForeground(Color.RED);
         label6.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -70,7 +70,7 @@ public class RegisterFrame extends JFrame{
     }
 
     private void setTextField(){
-        TextField textField1 = new TextField(740, 290, 250, 40);
+        TextField textField1 = new TextField(18 ,740, 290, 250, 40);
 
         JPasswordField textField2 = new JPasswordField();
         textField2.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 26));
@@ -80,7 +80,7 @@ public class RegisterFrame extends JFrame{
         textField3.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 26));
         textField3.setBounds(740, 410, 250, 40);
 
-        TextField textField4 = new TextField(740, 470, 250, 40);
+        TextField textField4 = new TextField(18 ,740, 470, 250, 40);
 
         this.add(textField1);
         this.add(textField2);
