@@ -5,7 +5,6 @@ import GUI.attribute.*;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -352,6 +351,7 @@ public class OrderFoodPage extends JPanel{
         scrollPane.setBounds(800, 100, tableWidth, 600);
         this.add(scrollPane);
 
+        showOrderMenu(orderTable, menuModel);
         orderTable.getTableHeader().repaint();
     }
 
