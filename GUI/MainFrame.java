@@ -43,7 +43,7 @@ public class MainFrame extends JFrame {
     private void setTextField(){
         TextField textField1 = new TextField(18 ,760, 300, 300, 40);
         JPasswordField passwordField = new JPasswordField();
-        passwordField.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 26));
+        passwordField.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 18));
         passwordField.setBounds(760, 400, 300, 40);
 
         this.add(textField1);

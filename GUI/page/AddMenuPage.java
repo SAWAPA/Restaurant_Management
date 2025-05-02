@@ -204,7 +204,7 @@ public class AddMenuPage extends JPanel {
     }
 
     private void selectTextField(Label id) {
-        ArrayList<Integer> arr = new ArrayList<>();
+        ArrayList<Integer> arr = new ArrayList<Integer>();
     
         menuTable.setCellSelectionEnabled(true);
         menuTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);

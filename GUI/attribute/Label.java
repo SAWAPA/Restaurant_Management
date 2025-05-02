@@ -27,7 +27,6 @@ public class Label extends JLabel {
         }
     }
 
-    // Set foreground color
     public void setColor(Color color) {
         this.setForeground(color);
     }

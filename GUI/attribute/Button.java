@@ -13,7 +13,7 @@ public class Button extends JButton implements ActionListener{
         this.setBounds(x, y, width, height);
         this.setFocusable(false);
         this.setBackground(Color.WHITE);
-        this.addActionListener(this);  // ให้ปุ่มฟัง event ของตัวเอง
+        this.addActionListener(this);
 
         setFontButton();
     }

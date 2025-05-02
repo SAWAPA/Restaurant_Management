@@ -5,16 +5,20 @@ import GUI.attribute.*;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -26,6 +30,8 @@ public class OrderFoodPage extends JPanel{
     private JTable orderTable;
 
     private Connection connection;
+
+    private Button deleteOrderButton;
 
     private DefaultTableModel menuModel;
     private DefaultTableModel orderModel;
@@ -42,6 +48,8 @@ public class OrderFoodPage extends JPanel{
         setOrderTable();
         setLabel();
         setTextFields();
+        createDeleteButton();
+        selectTableField();
         
         this.setVisible(true);
     }
@@ -66,8 +74,64 @@ public class OrderFoodPage extends JPanel{
         addMenuButton(orderTextField, quantityTextField);
     }
 
-    private void deleteOrderButton(){
+    private void createDeleteButton() {
         
+        deleteOrderButton = new Button("Delete", 1200, 40, 90, 30);
+        deleteOrderButton.setEnabled(false);
+        this.add(deleteOrderButton);
+    
+        deleteOrderButton.addActionListener(ev -> {
+            int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete?", "Confirm Delete", JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                SqlConnect connect = new SqlConnect();
+                String delete = "DELETE FROM restaurant.orders WHERE id = ?";
+                try (Connection connection = DriverManager.getConnection(connect.getUrlD(), connect.getUserSqlD(), connect.getPassSqlD());
+                    PreparedStatement ps = connection.prepareStatement(delete)) {
+                    
+                    for (int i = 0; i < selectedIds.size(); i++) {
+                        ps.setInt(1, selectedIds.get(i));
+                        ps.executeUpdate();
+                        System.out.println("Delete id = " + selectedIds.get(i));
+                    }
+                    
+                    orderModel.setRowCount(0);
+                    showOrderMenu(orderTable, orderModel);
+
+                    JOptionPane.showMessageDialog(this, "Delete success!");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                return;
+            }
+        });
+    }
+    
+    private ArrayList<Integer> selectedIds = new ArrayList<>();
+    
+    private void selectTableField(){
+        orderTable.setCellSelectionEnabled(true);
+        orderTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    
+        orderTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int[] selectedRows = orderTable.getSelectedRows();
+                selectedIds.clear();
+                for (int row : selectedRows) {
+                    Object value = orderTable.getValueAt(row, 0);
+                    if (value != null) {
+                        try {
+                            int intValue = Integer.parseInt(value.toString());
+                            selectedIds.add(intValue);
+                        } catch (NumberFormatException ex) {
+                            System.out.println("Not number: " + value);
+                        }
+                    }
+                }
+    
+                deleteOrderButton.setEnabled(!selectedIds.isEmpty());
+            }
+        });
     }
 
     private void addMenuButton(TextField orderId, TextField quantity){
@@ -210,6 +274,39 @@ public class OrderFoodPage extends JPanel{
         showTableMenu(menuTable, menuModel);
 
         menuTable.getTableHeader().repaint();
+    }
+
+    private void showOrderMenu(JTable order, DefaultTableModel model) {
+        try {
+            // connect to database
+            SqlConnect connect = new SqlConnect();
+            final String URL = connect.getUrlD() + "?useUnicode=true&characterEncoding=UTF-8"; // Support UTF-8
+            final String USER = connect.getUserSqlD();
+            final String PASS = connect.getPassSqlD();
+    
+            String query = "SELECT * FROM restaurant.orders";
+    
+            Connection connection = DriverManager.getConnection(URL, USER, PASS);
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            
+            //show data
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int quantity = rs.getInt("quantity");
+                int total_price = rs.getInt("total_price");
+    
+                orderModel.addRow(new Object[]{id, name, quantity, total_price});
+            }
+
+            rs.close();
+            ps.close();
+            connection.close();
+    
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showTableMenu(JTable menu, DefaultTableModel model) {
