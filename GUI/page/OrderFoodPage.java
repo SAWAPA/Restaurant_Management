@@ -128,7 +128,6 @@ public class OrderFoodPage extends JPanel{
                         }
                     }
                 }
-    
                 deleteOrderButton.setEnabled(!selectedIds.isEmpty());
             }
         });
@@ -217,12 +216,13 @@ public class OrderFoodPage extends JPanel{
 
                 orderModel.setRowCount(0);
                 while (resultSet.next()) {
-                    id = resultSet.getInt("ID");
-                    String name = resultSet.getString("Name");
-                    q = resultSet.getInt("Quantity");
+                    id = resultSet.getInt("id");
+                    String name = resultSet.getString("name");
+                    q = resultSet.getInt("quantity");
                     int price = resultSet.getInt("total_price");
+                    String date = resultSet.getString("order_date");
         
-                    orderModel.addRow(new Object[]{id, name, q, price});
+                    orderModel.addRow(new Object[]{id, name, q, price, date});
                 }
                 
             } catch (Exception ev) {
@@ -276,39 +276,6 @@ public class OrderFoodPage extends JPanel{
         menuTable.getTableHeader().repaint();
     }
 
-    private void showOrderMenu(JTable order, DefaultTableModel model) {
-        try {
-            // connect to database
-            SqlConnect connect = new SqlConnect();
-            final String URL = connect.getUrlD() + "?useUnicode=true&characterEncoding=UTF-8"; // Support UTF-8
-            final String USER = connect.getUserSqlD();
-            final String PASS = connect.getPassSqlD();
-    
-            String query = "SELECT * FROM restaurant.orders";
-    
-            Connection connection = DriverManager.getConnection(URL, USER, PASS);
-            PreparedStatement ps = connection.prepareStatement(query);
-            ResultSet rs = ps.executeQuery();
-            
-            //show data
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                int quantity = rs.getInt("quantity");
-                int total_price = rs.getInt("total_price");
-    
-                orderModel.addRow(new Object[]{id, name, quantity, total_price});
-            }
-
-            rs.close();
-            ps.close();
-            connection.close();
-    
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void showTableMenu(JTable menu, DefaultTableModel model) {
         try {
             // connect to database
@@ -360,6 +327,7 @@ public class OrderFoodPage extends JPanel{
         orderModel.addColumn("Name");
         orderModel.addColumn("Quantity");
         orderModel.addColumn("Price");
+        orderModel.addColumn("Order Date");
 
         orderTable.getColumnModel().getColumn(0).setPreferredWidth(50); // ID
         orderTable.getColumnModel().getColumn(0).setCellRenderer(center);
@@ -371,11 +339,14 @@ public class OrderFoodPage extends JPanel{
         
         orderTable.getColumnModel().getColumn(3).setPreferredWidth(150); // Category
 
+        orderTable.getColumnModel().getColumn(4).setPreferredWidth(200);
+
         orderTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         int tableWidth = orderTable.getColumnModel().getColumn(0).getPreferredWidth() +
                             orderTable.getColumnModel().getColumn(1).getPreferredWidth() +
                             orderTable.getColumnModel().getColumn(2).getPreferredWidth() +
-                            orderTable.getColumnModel().getColumn(3).getPreferredWidth() + 4;
+                            orderTable.getColumnModel().getColumn(3).getPreferredWidth() + 
+                            orderTable.getColumnModel().getColumn(4).getPreferredWidth() + 4;
 
         JScrollPane scrollPane = new JScrollPane(orderTable);
         scrollPane.setBounds(800, 100, tableWidth, 600);
@@ -383,4 +354,39 @@ public class OrderFoodPage extends JPanel{
 
         orderTable.getTableHeader().repaint();
     }
+
+    private void showOrderMenu(JTable order, DefaultTableModel model) {
+        try {
+            // connect to database
+            SqlConnect connect = new SqlConnect();
+            final String URL = connect.getUrlD() + "?useUnicode=true&characterEncoding=UTF-8"; // Support UTF-8
+            final String USER = connect.getUserSqlD();
+            final String PASS = connect.getPassSqlD();
+    
+            String query = "SELECT * FROM restaurant.orders";
+    
+            Connection connection = DriverManager.getConnection(URL, USER, PASS);
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            
+            //show data
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int quantity = rs.getInt("quantity");
+                int total_price = rs.getInt("total_price");
+                String dateTime = rs.getString("order_date");
+    
+                orderModel.addRow(new Object[]{id, name, quantity, total_price, dateTime});
+            }
+
+            rs.close();
+            ps.close();
+            connection.close();
+    
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
