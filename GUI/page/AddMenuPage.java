@@ -38,7 +38,6 @@ public class AddMenuPage extends JPanel {
     private Button insertButton;
     private Button deleteButton;
 
-
     public AddMenuPage() {
         this.setLayout(null);
         this.setBackground(Color.WHITE);

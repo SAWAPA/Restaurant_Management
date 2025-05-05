@@ -1,3 +1,4 @@
+package System_test;
 public class Order {
     private int menuId;
     private int quantity;
