@@ -8,7 +8,7 @@ public class Order {
     Order(int m, int q, int pricePerUnit){
         menuId = m;
         quantity = q;
-        totalPrice = quantity * pricePerUnit;  // คำนวณราคารวมทันที
+        totalPrice = quantity * pricePerUnit;
     }
 
     public void setMenuId(int m){
@@ -20,7 +20,7 @@ public class Order {
     }
 
     public void setTotalPrice(int pricePerUnit){
-        totalPrice = quantity * pricePerUnit;  // คำนวณใหม่ตามจำนวน
+        totalPrice = quantity * pricePerUnit;
     }
 
     public int getMenuId(){

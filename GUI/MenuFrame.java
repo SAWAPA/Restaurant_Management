@@ -22,19 +22,19 @@ public class MenuFrame extends JFrame{
 
     MenuFrame(String username, String role) {
         this.setTitle("Menu");
-        this.setSize(1920, 1080);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLayout(null);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+    
         addMenuPage = new AddMenuPage();
         addMenuPage.setLayout(null);
         addMenuPage.setBackground(Color.WHITE);
-
+    
         orderFoodPage = new OrderFoodPage();
         orderFoodPage.setLayout(null);
         orderFoodPage.setBackground(Color.WHITE);
-
+    
         menu3Page = new JPanel();
         menu3Page.setLayout(null);
         menu3Page.setBackground(Color.WHITE);
@@ -45,19 +45,16 @@ public class MenuFrame extends JFrame{
         mainPanel.add(addMenuPage, "AddMenuPage");
         mainPanel.add(orderFoodPage, "OrderFoodPage");
         mainPanel.add(menu3Page, "Menu3Page");
-
         this.add(mainPanel);
-
         initializeUI();
-
+    
         Label label1 = new Label("Login successfully! Welcome, " + username + " Role: " + role, "bold", 20, 100, 30, 1000, 50);
         addMenuPage.add(label1);
-
+    
         isMenuVisible = true;
         sidePanel.setVisible(true);
     }
-
-
+    
     protected void initializeUI(){
         setMenuBars();
 

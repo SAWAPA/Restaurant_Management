@@ -34,11 +34,12 @@ public class OrderFoodPage extends JPanel{
 
     private DefaultTableModel menuModel;
     private DefaultTableModel orderModel;
+
+    private Label showTotalPrice;
     
     public OrderFoodPage(){
         this.setLayout(null);
         this.setBackground(Color.WHITE);
-
         initializeUI();
     }
 
@@ -49,6 +50,7 @@ public class OrderFoodPage extends JPanel{
         setTextFields();
         createDeleteButton();
         selectTableField();
+        calculateButton();
         
         this.setVisible(true);
     }
@@ -71,6 +73,42 @@ public class OrderFoodPage extends JPanel{
         this.add(quantityTextField);
 
         addMenuButton(orderTextField, quantityTextField);
+    }
+
+    private void calculateButton(){
+        Button cal = new Button("Calculate", 1300, 40, 110, 30);
+
+        this.add(cal);
+
+        cal.addActionListener(e->{
+            int rowOrderTable = orderModel.getRowCount();
+            int sum = 0;
+
+            for (int i = 0; i < rowOrderTable; i++) {
+                Object priceObj = orderModel.getValueAt(i, 3);
+
+                if (priceObj != null) {
+                    try {
+                        int price = Integer.parseInt(priceObj.toString());
+                        sum +=  price;
+                    } catch (NumberFormatException ex) {
+                        System.out.println(ex);
+                    }
+                }
+            }
+            showCalLabel(sum);
+        });
+    }
+
+    private void showCalLabel(int totalPrice){
+        if (showTotalPrice != null) {
+            this.remove(showTotalPrice);
+        }
+    
+        showTotalPrice = new Label("Total price: " + totalPrice, "bold", 24, 800, 720, 200, 40);
+    
+        this.add(showTotalPrice);
+        this.repaint();
     }
 
     private void createDeleteButton() {

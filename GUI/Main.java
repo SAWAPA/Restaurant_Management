@@ -6,6 +6,5 @@ public class Main{
         // new MainFrame();
         // new RegisterFrame();
         new MenuFrame("","");
-        // new OrderFood();
     }   
 }
